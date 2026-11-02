@@ -33,7 +33,7 @@ const seed = [
       "Plant 500 saplings along the avenue and learn urban gardening basics from local experts.",
     category: "Plantation",
     image:
-      "https://images.unsplash.com/photo-1509099836633-18ba1795216d?w=800&q=80",
+      "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80",
     location: "Khulshi, Chattogram",
     eventDate: new Date("2026-12-19T08:00:00Z"),
     creatorId: "seed",
