@@ -1,21 +1,3 @@
 {
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/(.*)",
-      "destination": {
-        "type": "service",
-        "service": "civora-server"
-      }
-    }
-  ],
-  "services": {
-    "civora-server": {
-      "root": ".",
-      "buildCommand": "npm install"
-    }
-  }
+  "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }]
 }
