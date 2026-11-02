@@ -73,7 +73,7 @@ app.use(errorHandler);
 
 async function start() {
   try {
-    await connectDB(process.env.MONGODB_URI);
+    await ensureDb();
     console.log("MongoDB connected");
   } catch (err) {
     console.error("MongoDB connection failed:", err.message);
@@ -82,6 +82,23 @@ async function start() {
   app.listen(PORT, () => console.log(`civora-server listening on :${PORT}`));
 }
 
-if (require.main === module) start();
+const mongoose = require("mongoose");
+
+async function ensureDb() {
+  if (mongoose.connection.readyState === 1) return mongoose.connection;
+  return connectDB(process.env.MONGODB_URI);
+}
+
+if (require.main === module) {
+  start();
+} else {
+  // Hosted as an imported handler (e.g. Vercel services bundle the
+  // entrypoint instead of executing it): connect in the background so
+  // request handlers never hit Mongoose's operation buffering timeout.
+  ensureDb().then(
+    () => console.log("MongoDB connected (import mode)"),
+    (err) => console.error("MongoDB connection failed:", err.message)
+  );
+}
 
 module.exports = app;
