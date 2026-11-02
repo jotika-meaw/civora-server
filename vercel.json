@@ -1,3 +1,9 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }]
+  "services": {
+    "civora-server": {
+      "root": ".",
+      "entrypoint": "src/server.js",
+      "buildCommand": "npm install"
+    }
+  }
 }
