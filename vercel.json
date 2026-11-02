@@ -1,4 +1,13 @@
 {
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": {
+        "type": "service",
+        "service": "civora-server"
+      }
+    }
+  ],
   "services": {
     "civora-server": {
       "root": ".",
