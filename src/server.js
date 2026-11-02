@@ -22,6 +22,7 @@ const clientUrls = (process.env.CLIENT_URL || "http://localhost:3000")
   .filter(Boolean);
 
 app.use(helmet());
+app.set("trust proxy", 1);
 app.use(
   cors({
     origin: (origin, cb) => {
