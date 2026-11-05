@@ -50,6 +50,32 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
 
+const mongoose = require("mongoose");
+
+let dbPromise = null;
+async function ensureDb() {
+  if (mongoose.connection.readyState === 1) return mongoose.connection;
+  if (!dbPromise) {
+    dbPromise = connectDB(process.env.MONGODB_URI).catch((err) => {
+      dbPromise = null;
+      throw err;
+    });
+  }
+  return dbPromise;
+}
+
+// Ensure DB is connected before any /api handler runs.
+// Retries on failure so a single failed cold-start connect does not
+// leave this isolate buffering (and timing out) forever.
+app.use("/api", async (_req, _res, next) => {
+  try {
+    await ensureDb();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.use("/api/events", eventsRouter);
 // Spec endpoints: /api/my-events and /api/my-joined-events
 app.use("/api/my-events", (req, res, next) => {
@@ -80,13 +106,6 @@ async function start() {
     if (process.env.NODE_ENV === "production") process.exit(1);
   }
   app.listen(PORT, () => console.log(`civora-server listening on :${PORT}`));
-}
-
-const mongoose = require("mongoose");
-
-async function ensureDb() {
-  if (mongoose.connection.readyState === 1) return mongoose.connection;
-  return connectDB(process.env.MONGODB_URI);
 }
 
 if (require.main === module) {
